@@ -1,1 +1,3 @@
 from .fileReader.fluent import FluentFileReader as fluent_file_reader
+from .windowAveraging import WindowAveraging as window_averaging
+from .findOptimalStoppingCriterion import StoppingCriterion as stopping_criterion
