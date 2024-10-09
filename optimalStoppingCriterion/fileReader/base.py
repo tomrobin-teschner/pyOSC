@@ -9,11 +9,16 @@ class FileReader(ABC):
     self.phi = list()
     if not self.__file_is_readable():
       raise Exception(f'Could not read file! File is: {self.filename}')
+    
+    self._read()
 
 
   @abstractmethod
-  def read(self):
+  def _read(self):
     pass
+
+  def get_values(self):
+    return self.phi
 
   def __file_is_readable(self):
     try:
