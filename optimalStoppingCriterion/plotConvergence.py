@@ -2,24 +2,44 @@ import matplotlib.pyplot as plt
 from os.path import join
 
 class PlotConvergence():
-  def __init__(self, coefficients):
+  def __init__(self, name, boundaries, coefficients):
+    self.name = name
+    self.boundaries = boundaries
     self.coefficients = coefficients
-    self.figures = dict()
-    self.ax = dict()
-
-    count = 1
-    for coefficient in self.coefficients:
-      self.figures[coefficient] = plt.figure(count)
-      self.ax[coefficient] = self.figures[coefficient].add_subplot(111)
-      count += 1
+    fig, ax = plt.subplots(len(boundaries), len(coefficients), \
+      figsize=(10, 7.5))
+    plt.subplots_adjust(wspace=0.5, hspace=0.5)
+    self.fig = fig
+    self.ax = ax
 
   def add_data(self, boundary, coefficient, values):
-    self.ax[coefficient].plot(values, label=boundary)
+    row = self._boundary_name_to_index(boundary)
+    col = self._coefficient_name_to_index(coefficient)
+
+    self.ax[row, col].plot(values, color='k', linestyle='-', label=boundary)
+    self.ax[row, col].set_title(boundary, fontsize=16)
+    self.ax[row, col].set_ylabel(coefficient, fontsize=14)
+    self.ax[row, col].set_xlabel('Iterations', fontsize=14)
+    self.ax[row, col].tick_params(axis='both', which='major', labelsize=12)
+
+  def add_optimal_iteration(self, boundary, coefficient, iteration):
+    row = self._boundary_name_to_index(boundary)
+    col = self._coefficient_name_to_index(coefficient)
+    self.ax[row, col].axvline(x=iteration, color='k', linestyle='--')
 
   def plot(self):
-    for coefficient in self.coefficients:
-      self.ax[coefficient].set_xlabel('Iterations')
-      self.ax[coefficient].set_ylabel(coefficient)
-      self.ax[coefficient].legend()
-      # self.ax.axvline(x=2500, color='k', linestyle='--')
-      self.figures[coefficient].savefig(join('output', coefficient + '.png'))
+    self.fig.savefig(join('output', self.name + '.png'))
+
+  def _boundary_name_to_index(self, boundary):
+    index = 0
+    for boundary_name in self.boundaries:
+      if boundary_name == boundary:
+        return index
+      index += 1
+
+  def _coefficient_name_to_index(self, coefficient):
+    index = 0
+    for coefficient_name in self.coefficients:
+      if coefficient_name == coefficient:
+        return index
+      index += 1
