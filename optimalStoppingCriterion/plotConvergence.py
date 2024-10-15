@@ -6,9 +6,14 @@ class PlotConvergence():
     self.name = name
     self.boundaries = boundaries
     self.coefficients = coefficients
+
+    num_rows = len(boundaries)
+    num_cols = len(coefficients)
+
     fig, ax = plt.subplots(len(boundaries), len(coefficients), \
-      figsize=(10, 7.5))
-    plt.subplots_adjust(wspace=0.5, hspace=0.5)
+      figsize=(num_cols * 5, num_rows * 5))
+
+    plt.subplots_adjust(wspace=0.3, hspace=0.3)
     self.fig = fig
     self.ax = ax
 
@@ -16,16 +21,33 @@ class PlotConvergence():
     row = self._boundary_name_to_index(boundary)
     col = self._coefficient_name_to_index(coefficient)
 
-    self.ax[row, col].plot(values, color='k', linestyle='-', label=boundary)
-    self.ax[row, col].set_title(boundary, fontsize=16)
-    self.ax[row, col].set_ylabel(coefficient, fontsize=14)
-    self.ax[row, col].set_xlabel('Iterations', fontsize=14)
-    self.ax[row, col].tick_params(axis='both', which='major', labelsize=12)
+    self._get_plot_handle(row, col).plot(values, color='k', linestyle='-')
+    self._get_plot_handle(row, col).set_title(boundary, fontsize=16)
+    self._get_plot_handle(row, col).set_ylabel(coefficient, fontsize=14)
+    self._get_plot_handle(row, col).set_xlabel('Iterations', fontsize=14)
+    self._get_plot_handle(row, col).tick_params(axis='both', which='major', \
+      labelsize=12)
 
-  def add_optimal_iteration(self, boundary, coefficient, iteration):
-    row = self._boundary_name_to_index(boundary)
-    col = self._coefficient_name_to_index(coefficient)
-    self.ax[row, col].axvline(x=iteration, color='k', linestyle='--')
+  def add_optimal_iteration(self, windowed_data):
+    optimal_iteration = -1
+    for boundary in windowed_data:
+      for coefficient in windowed_data[boundary]:
+        row = self._boundary_name_to_index(boundary)
+        col = self._coefficient_name_to_index(coefficient)
+        iteration = windowed_data[boundary][coefficient]['iterations']
+
+        self._get_plot_handle(row, col).axvline(x=iteration, color='k', \
+          linestyle='--')
+
+        if iteration > optimal_iteration:
+          optimal_iteration = iteration
+    
+    for boundary in windowed_data:
+      for coefficient in windowed_data[boundary]:
+        row = self._boundary_name_to_index(boundary)
+        col = self._coefficient_name_to_index(coefficient)
+        self._get_plot_handle(row, col).axvline(x=optimal_iteration, \
+          color='b', linestyle=':')
 
   def plot(self):
     self.fig.savefig(join('output', self.name + '.png'))
@@ -43,3 +65,9 @@ class PlotConvergence():
       if coefficient_name == coefficient:
         return index
       index += 1
+
+  def _get_plot_handle(self, row, col):
+    if len(self.boundaries) == 1:
+      return self.ax[col]
+    elif len(self.coefficients) > 1:
+      return self.ax[row, col]
