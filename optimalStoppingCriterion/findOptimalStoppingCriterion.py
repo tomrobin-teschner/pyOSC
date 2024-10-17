@@ -16,10 +16,12 @@ class StoppingCriterion():
         best_window_size = -1
         convergence_threshold = -1
         number_of_iterations = -1
+        has_converged = False
 
         # first, we check if a converged solution has been found
         for i in range(0, len(entries[0])):
           if entries[0][i] is True:
+            has_converged = True
             if best_window_size == -1:
               number_of_iterations = entries[1][i]
               convergence_threshold = entries[2][i]
@@ -43,10 +45,16 @@ class StoppingCriterion():
                 convergence_threshold = entries[2][i]
                 best_window_size = entries[3][i]
           print(f'  WARNING: {boundary} / {coefficient} converged prematurely!')
+
+        status_string ='Premature convergence'
+        if has_converged is True:
+          status_string = 'Converged'
+
         self.best_convergence_parameters[boundary][coefficient] = {
           'window_size': best_window_size,
           'convergence_threshold': convergence_threshold,
           'iterations': number_of_iterations,
+          'status': status_string
         }
 
   def get_window_size(self):

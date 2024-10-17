@@ -90,6 +90,7 @@ def main():
       print(f'    Iterations:            {windowed_data[boundary][coefficient]["iterations"]}')
       print(f'    Window size:           {windowed_data[boundary][coefficient]["window_size"]}')
       print(f'    Convergence threshold: {windowed_data[boundary][coefficient]["convergence_threshold"]}')
+      print(f'    Status:                {windowed_data[boundary][coefficient]["status"]}')
     print('')
 
 if __name__ == "__main__":

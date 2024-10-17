@@ -25,14 +25,14 @@ class HandleCommandLineArguments():
       raise Exception('No case specified. Use --help to see usage.')
     
     if '-w' in self.args:
-      self.min_window = int(self.args.index('-w') + 1)
-      self.max_window = int(self.args.index('-w') + 2)
-      self.increments = int(self.args.index('-w') + 3)
+      self.min_window = int(self.args[int(self.args.index('-w') + 1)])
+      self.max_window = int(self.args[int(self.args.index('-w') + 2)])
+      self.increments = int(self.args[int(self.args.index('-w') + 3)])
 
     elif '--window' in self.args:
-      self.min_window = int(self.args.index('--window') + 1)
-      self.max_window = int(self.args.index('--window') + 2)
-      self.increments = int(self.args.index('--window') + 3)
+      self.min_window = int(self.args[int(self.args.index('--window') + 1)])
+      self.max_window = int(self.args[int(self.args.index('--window') + 2)])
+      self.increments = int(self.args[int(self.args.index('--window') + 3)])
 
     else:
       print('No window size specified. Using default window size of min_window = 10, max_window = 100, increments = 5')
@@ -40,9 +40,9 @@ class HandleCommandLineArguments():
 
 
     if '-ct' in self.args:
-      self.convergence_threshold = float(self.args[self.args.index('-ct') + 1])
+      self.convergence_threshold = float(self.args[int(self.args.index('-ct') + 1)])
     elif'--convergence-threshold' in self.args:
-      self.convergence_threshold = float(self.args[self.args.index('--convergence-threshold') + 1])
+      self.convergence_threshold = float(self.args[int(self.args.index('--convergence-threshold') + 1)])
     else:
       print('No convergence threshold specified. Using default convergence threshold of 0.01 (i.e. 1%)\n')
 
