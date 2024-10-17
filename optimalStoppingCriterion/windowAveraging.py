@@ -1,4 +1,4 @@
-from math import fabs, floor, log10
+from math import fabs, floor, log10, ceil
 
 
 class WindowAveraging():
@@ -30,6 +30,7 @@ class WindowAveraging():
   def determine_best_residual_threshold(self):
     has_converged = list()
     iterations_to_convergence = list()
+    residual = list()
 
     for window in self.window_sizes:
       averages = [0] * (len(self.values) - window)
@@ -61,12 +62,17 @@ class WindowAveraging():
       if lowest_residual_before_optimum < lowest_residual_after_optimum:
         has_converged.append(False)
         iterations_to_convergence.append(iteration_before_optimum)
+        residual.append(self._2_sig_dig(lowest_residual_before_optimum))
 
       elif lowest_residual_before_optimum >= lowest_residual_after_optimum:
         has_converged.append(True)
         iterations_to_convergence.append(iteration_after_optimum)
+        residual.append(self._2_sig_dig(lowest_residual_after_optimum))
 
-    return has_converged, iterations_to_convergence, self.window_sizes
+    return has_converged, iterations_to_convergence, residual, self.window_sizes
       
   def _2_sig_dig(self, x, sig=1):
-    return format(round(x, sig - int(floor(log10(abs(x)))) - 1), f'.{sig}e')
+    exp = floor(log10(abs(x)))
+    mantissa = x / 10**exp
+    mantissa = ceil(mantissa * 10**sig) / 10**sig
+    return format(mantissa * 10**exp, f'.{sig}e')
