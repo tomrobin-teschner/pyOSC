@@ -5,10 +5,11 @@ class HandleCommandLineArguments():
   def __init__(self, args):
     self.args = args
     self.case = ''
-    self.window = list()
+    self.min_window = 10
+    self.max_window = 100
+    self.increments = 5
     self.convergence_threshold = 0.01
     self._process_cla()
-    self._print_help()
 
   def _process_cla(self):
     has_case = False
@@ -24,19 +25,16 @@ class HandleCommandLineArguments():
       raise Exception('No case specified. Use --help to see usage.')
     
     if '-w' in self.args:
-      min_win = int(self.args.index('-w') + 1)
-      max_win = int(self.args.index('-w') + 2)
-      increments = int(self.args.index('-w') + 3)
-      self.window = self.args[min_win, max_win, increments]
+      self.min_window = int(self.args.index('-w') + 1)
+      self.max_window = int(self.args.index('-w') + 2)
+      self.increments = int(self.args.index('-w') + 3)
 
     elif '--window' in self.args:
-      min_win = int(self.args.index('--window') + 1)
-      max_win = int(self.args.index('--window') + 2)
-      increments = int(self.args.index('--window') + 3)
-      self.window = self.args[min_win, max_win, increments]
+      self.min_window = int(self.args.index('--window') + 1)
+      self.max_window = int(self.args.index('--window') + 2)
+      self.increments = int(self.args.index('--window') + 3)
 
     else:
-      self.window = [10, 100, 5]
       print('No window size specified. Using default window size of min_window = 10, max_window = 100, increments = 5')
       print('If you want to change these defaults, see the help message with -h or --help\n')
 
@@ -47,6 +45,18 @@ class HandleCommandLineArguments():
       self.convergence_threshold = float(self.args[self.args.index('--convergence-threshold') + 1])
     else:
       print('No convergence threshold specified. Using default convergence threshold of 0.01 (i.e. 1%)\n')
+
+    if '-h' in self.args or '--help' in self.args:
+      self._print_help()
+
+  def get_case(self):
+    return self.case
+
+  def get_window_sizes(self):
+    return self.min_window, self.max_window, self.increments
+  
+  def get_convergence_threshold(self):
+    return self.convergence_threshold
 
 
   def _print_help(self):

@@ -4,20 +4,14 @@ from os import listdir
 import json
 from sys import argv
 
-# define the case. Name needs to match folder name within input/ folder
-case = 'saab340'
-
-min_window_size = 10
-max_window_size = 100
-window_increments = 5
-
-asymptotic_convergence_threshold = 1e-2
-
 def main():
   # process command line arguments (CLAs)
   cla = osc.handle_cla(argv)
 
-  exit()
+  case = cla.get_case()
+  min_window_size, max_window_size, window_increments = cla.get_window_sizes()
+  asymptotic_convergence_threshold = cla.get_convergence_threshold()
+
   # initialise dictionary holding convergence results
   convergence_data = dict()
 
