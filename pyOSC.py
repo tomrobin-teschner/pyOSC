@@ -2,19 +2,22 @@ import optimalStoppingCriterion as osc
 from os.path import join
 from os import listdir
 import json
+from sys import argv
 
-# define input folder from where to read coefficient data from
+# define the case. Name needs to match folder name within input/ folder
+case = 'saab340'
 
-case = 'frontWing'
+min_window_size = 10
+max_window_size = 100
+window_increments = 5
 
-min_window_size = 50
-max_window_size = 500
-window_increments = 50
-
-window_convergence_threshold = 1e-8
 asymptotic_convergence_threshold = 1e-2
 
 def main():
+  # process command line arguments (CLAs)
+  cla = osc.handle_cla(argv)
+
+  exit()
   # initialise dictionary holding convergence results
   convergence_data = dict()
 
@@ -62,14 +65,14 @@ def main():
         asymptotic_convergence_threshold, values)
       
       # determine the best residual threshold and iteration to stop
-      converged, iterations, window_sizes = \
+      converged, iterations, threshold, window_sizes = \
         averager.determine_best_residual_threshold()
 
       # add data to coefficient_plot
       coefficient_plot.add_data(boundary, coefficient, values)
 
       # store data
-      boundary_data[coefficient] = [converged, iterations, window_sizes]    
+      boundary_data[coefficient] = [converged, iterations, threshold, window_sizes]    
     convergence_data[boundary] = boundary_data
 
   find_stopping_criterion = osc.stopping_criterion(convergence_data)
@@ -77,9 +80,6 @@ def main():
   
   with open(join('output', case +'_windowed_data.json'), 'w') as f:
     json.dump(windowed_data, f, indent=4)
-
-  # best_windowed_data = find_stopping_criterion.get_best_window_size()
-  # print(best_windowed_data)
 
   # add optimal stopping point to each plot
   coefficient_plot.add_optimal_iteration(windowed_data)
@@ -93,8 +93,9 @@ def main():
     print(f'{boundary}:')
     for coefficient in windowed_data[boundary]:
       print(f'  {coefficient}:')
-      print(f'    Iterations:  {windowed_data[boundary][coefficient]["iterations"]}')
-      print(f'    Window size: {windowed_data[boundary][coefficient]["window_size"]}')
+      print(f'    Iterations:            {windowed_data[boundary][coefficient]["iterations"]}')
+      print(f'    Window size:           {windowed_data[boundary][coefficient]["window_size"]}')
+      print(f'    Convergence threshold: {windowed_data[boundary][coefficient]["convergence_threshold"]}')
     print('')
 
 if __name__ == "__main__":
