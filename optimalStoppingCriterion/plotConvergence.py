@@ -28,6 +28,19 @@ class PlotConvergence():
     self._get_plot_handle(row, col).tick_params(axis='both', which='major', \
       labelsize=12)
 
+  def add_monotonic_convergence(self, boundary, coefficient, iteration):
+    row = self._boundary_name_to_index(boundary)
+    col = self._coefficient_name_to_index(coefficient)
+    self._get_plot_handle(row, col).axvline(x=iteration, color='orange', \
+          linestyle='--')
+    
+  def add_earliest_stopping_iteration(self, boundary, coefficient, iteration):
+    row = self._boundary_name_to_index(boundary)
+    col = self._coefficient_name_to_index(coefficient)
+    self._get_plot_handle(row, col).axvline(x=iteration, color='green', \
+          linestyle='--')
+
+
   def add_optimal_iteration(self, windowed_data):
     optimal_iteration = -1
     for boundary in windowed_data:
@@ -49,8 +62,8 @@ class PlotConvergence():
         self._get_plot_handle(row, col).axvline(x=optimal_iteration, \
           color='b', linestyle=':')
 
-  def plot(self):
-    self.fig.savefig(join('output', self.name + '.png'))
+  def plot(self, case):
+    self.fig.savefig(join('output', case + '_' + self.name + '.png'))
 
   def _boundary_name_to_index(self, boundary):
     index = 0
