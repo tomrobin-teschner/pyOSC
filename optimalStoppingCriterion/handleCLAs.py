@@ -70,8 +70,8 @@ class HandleCommandLineArguments():
       print('                     Example: -w 10 100 10. Smallest window = 10')
       print('                     largest window = 100, and window increments = 10')
       print('                     If no window size is specified, the default 10 100 5 is used')
-      print('  -ct, --convergence-threshold')
-      print('                     Convergence threshold to use for convergence analysis.')
+      print('  -act, --asymptotic-convergence-threshold')
+      print('                     Asymptotic convergence threshold to use for convergence analysis.')
       print('                     This value will be used to check if coefficients have converged')
       print('                     to the asymptotic value at the end of the simulation.')
 
