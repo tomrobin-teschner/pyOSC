@@ -40,34 +40,65 @@ class WindowAveraging():
         averages[index] /= window
       
       window_residual = [0] * (len(self.values) - window - 1)
-      lowest_residual_before_optimum = 1
-      lowest_residual_after_optimum = 1
-      iteration_before_optimum = 0
-      iteration_after_optimum = 0
       for iteration in range(window, len(self.values) - 1):
         index = iteration - window
-
         window_residual[index] = fabs(averages[index + 1] - averages[index])
         window_residual[index] /= fabs(averages[index])
 
-        if iteration < self.earliest_iteration_to_stop:
-          if window_residual[index] < lowest_residual_before_optimum:
-            lowest_residual_before_optimum = window_residual[index]
-            iteration_before_optimum = iteration
-        else:
-          if window_residual[index] < lowest_residual_after_optimum:
-            lowest_residual_after_optimum = window_residual[index]
-            iteration_after_optimum = iteration
+      residual_at_optimun = window_residual[self.earliest_iteration_to_stop]
 
-      if lowest_residual_before_optimum < lowest_residual_after_optimum:
+      has_lower_residual_before_optimum = False
+      iteration_before_optimum = 0
+      residual_before_optimum = 0
+      for iteration in range(0, self.earliest_iteration_to_stop):
+        if window_residual[iteration] < residual_at_optimun:
+          has_lower_residual_before_optimum = True
+          iteration_before_optimum = iteration
+          residual_before_optimum = window_residual[iteration]
+          break
+
+      has_lower_residual_after_optimum = False
+      iteration_beyond_optimum = 0
+      residual_after_optimum = 0
+      for iteration in range(self.earliest_iteration_to_stop, len(self.values) - 1):
+        if window_residual[iteration] < residual_at_optimun:
+          has_lower_residual_after_optimum = True
+          iteration_beyond_optimum = iteration
+          residual_after_optimum = window_residual[iteration]
+          break
+
+      if has_lower_residual_before_optimum and not has_lower_residual_after_optimum:
         has_converged.append(False)
         iterations_to_convergence.append(iteration_before_optimum)
-        residual.append(self._2_sig_dig(lowest_residual_before_optimum))
-
-      elif lowest_residual_before_optimum >= lowest_residual_after_optimum:
+        residual.append(self._2_sig_dig(residual_before_optimum))  
+      elif has_lower_residual_before_optimum and has_lower_residual_after_optimum:
         has_converged.append(True)
-        iterations_to_convergence.append(iteration_after_optimum)
-        residual.append(self._2_sig_dig(lowest_residual_after_optimum))
+        iterations_to_convergence.append(iteration_beyond_optimum)
+        residual.append(self._2_sig_dig(residual_after_optimum))
+      elif not has_lower_residual_before_optimum:
+        has_converged.append(True)
+        iterations_to_convergence.append(self.earliest_iteration_to_stop)
+        residual.append(self._2_sig_dig(residual_at_optimun))
+
+
+      #   if iteration < self.earliest_iteration_to_stop:
+      #     if window_residual[index] < lowest_residual_before_optimum:
+      #       lowest_residual_before_optimum = window_residual[index]
+      #       iteration_before_optimum = iteration
+      #   else:
+      #     if window_residual[index] < lowest_residual_after_optimum:
+      #       lowest_residual_after_optimum = window_residual[index]
+      #       iteration_after_optimum = iteration
+
+      # if lowest_residual_before_optimum < lowest_residual_after_optimum:
+      #   has_converged.append(False)
+      #   iterations_to_convergence.append(iteration_before_optimum)
+      #   residual.append(self._2_sig_dig(lowest_residual_before_optimum))
+
+      # elif lowest_residual_before_optimum >= lowest_residual_after_optimum:
+      #   has_converged.append(True)
+      #   iterations_to_convergence.append(iteration_after_optimum)
+      #   residual.append(self._2_sig_dig(lowest_residual_after_optimum))
 
     return has_converged, iterations_to_convergence, residual, self.window_sizes
       
