@@ -44,7 +44,8 @@ class HandleCommandLineArguments():
     elif'--convergence-threshold' in self.args:
       self.convergence_threshold = float(self.args[int(self.args.index('--convergence-threshold') + 1)])
     else:
-      print('No convergence threshold specified. Using default convergence threshold of 0.01 (i.e. 1%)\n')
+      print('No asymptotic convergence threshold specified.')
+      print('Using default asymptotic convergence threshold of 0.01 (1%)\n')
 
     if '-h' in self.args or '--help' in self.args:
       self._print_help()
