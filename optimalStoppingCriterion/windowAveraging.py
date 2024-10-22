@@ -45,7 +45,12 @@ class WindowAveraging():
         window_residual[index] = fabs(averages[index + 1] - averages[index])
         window_residual[index] /= fabs(averages[index])
 
-      residual_at_optimum = window_residual[self.earliest_iteration_to_stop]
+      assert self.earliest_iteration_to_stop > window_size, \
+        'optimal iteration to stop reached before largest window size. Reduce your window sizes!\n' \
+        f'Largest window:            {self.window_sizes[-1]}\n' \
+        f'Optimal iteration to stop: {self.earliest_iteration_to_stop}\n' \
+        f'Max window size possible:  {self.earliest_iteration_to_stop}\n'
+      residual_at_optimum = window_residual[self.earliest_iteration_to_stop - window_size]
 
       has_lower_residual_before_optimum = False
       iteration_before_optimum = 0

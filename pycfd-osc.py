@@ -10,7 +10,7 @@ def main():
 
   case = cla.get_case()
   min_window_size, max_window_size, window_increments = cla.get_window_sizes()
-  asymptotic_convergence_threshold = cla.get_convergence_threshold()
+  asymptotic_convergence_threshold = cla.get_asymptotic_convergence_threshold()
 
   # initialise dictionary holding convergence results
   convergence_data = dict()
@@ -35,6 +35,9 @@ def main():
 
       # read values from file
       values = osc.fluent_file_reader(path_and_filename).get_values()
+      max_iterations = cla.get_max_iterations()
+      if max_iterations > 0:
+        values = values[:max_iterations]
 
       # determine the averaged (asymptotic) coefficient value at the end of the simulation
       asymptotic_values = osc.find_asymptotic_values(values)

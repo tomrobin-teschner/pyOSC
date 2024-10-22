@@ -27,7 +27,7 @@ class FindOptimalIteration():
   def get_iteration_with_highest_acceptable_error(self, average, threshold):
     for iteration in range(len(self.values) - self.window_size - 1, 0, -1):
       residual = fabs(self.averages[iteration] - average)
-      residual /= average
+      residual /= fabs(average)
 
       if residual > threshold:
         return iteration
