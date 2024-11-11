@@ -1,3 +1,5 @@
+For a detailed explanation of how this framework works, please see my write-up at [cfd.university](https://cfd.university/blog/how-to-determine-the-best-stopping-criterion-for-cfd-simulations/)
+
 ## Introduction
 
 pyCFD-OSC (Python Computational Fluid Dynamics - Optimal Stopping Criterion) is a package to post-process an existing simulation to extract the best stopping criterion. It minimises the number of iterations that need to be run to achieve a desired accuracy, and provides output that can be used in the CFD set up.
